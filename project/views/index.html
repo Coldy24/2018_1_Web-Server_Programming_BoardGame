@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>다빈치코드 사이트에 어서오세요</title>
+
+    <style type = "text/css">
+        body{
+            display: table;
+            text-align: center;
+            background:url("http://coldy24.iptime.org/imageSource?name=mainPage.jpg");
+            /* server URL : http://127.0.0.1 for test*/
+        }
+        div{
+
+            border: 3px solid #48BAE4;
+            width :600px;
+            height :600px;
+            display : table-cell;
+            vertical-align: middle;
+            padding: 10px;
+            font-size: 30px;
+            font-weight: bold;
+            text-align: center;
+            background-color: #ffffff;
+            opacity: 0.9;
+        }
+        #innerDiv{
+            width : 400px;
+            height: 400px;
+            border : 3px solid #221631;
+            margin: 50px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        button{
+            margin : 10px
+        }
+    </style>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+        var socket = io();
+
+        function onClickCreateAccount(){
+            location.href='/createAccount';
+        }
+        function loginError(){
+            socket.on('loginError',function(){
+                alert("사용자 아이디/패스워드가 일치하지 않습니다");
+            });
+        }
+    </script>
+    <script src="../gameLogic.js"></script>
+
+</head>
+
+<body align = "center">
+    <div id = "loginForm" align = "center">
+        <div id = "innerDiv" >
+            <fieldset>
+                <legend>회원정보</legend>
+                <form action = "/userLogin" method = "post">
+                     아 이 디 : <input type = "text" name = "userID"><br>
+                     비밀번호 : <input type = "password" name = "userPassword"><br>
+                    <input type="submit" value="로그인">
+                </form>
+                    <button id = "createAccount" onclick="onClickCreateAccount()">회원가입</button>
+            </fieldset>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

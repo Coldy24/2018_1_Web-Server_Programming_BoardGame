@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html,body{
+            margin:0;
+            height : 100%}
+        #enemyShow{
+            width :100%;
+            height:40%;
+            float : top;
+            background: #dddddd;
+        }
+        #myShow{
+            width :100%;
+            height:40%;
+            background: #C2EfA3;
+        }
+        #select{
+            width :100%;
+            height:20%;
+            float : bottom;
+            background: #dddddd;
+        }
+        img{
+            background-blend-mode: multiply;
+        }
+        table{
+            text-align: center;
+            margin: auto;
+        }
+        #select{
+            text-align : center;
+        }
+        select, input{
+            padding: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+        var currentURL = window.location.href.split(/\?|&|=/);
+        var user1List =  [];
+        var user1EnemyList = [];
+        var turnFlag = false;
+        var skipFlag = false;
+        const httpServerAddress = "http://coldy24.iptime.org";
+
+        socket.on('connect',function(){
+            console.log("서버와 연결");
+            console.log("소켓아이디 : " + socket.id);
+        });
+        function blockMatch(block, blockPosition){
+            switch(block){
+                case 1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=0b.png";
+                    break;
+                case 1.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=0w.png";
+                    break;
+                case 2:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=1b.png";
+                    break;
+                case 2.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=1w.png";
+                    break;
+                case 3:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=2b.png";
+                    break;
+                case 3.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=2w.png";
+                    break;
+                case 4:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=3b.png";
+                    break;
+                case 4.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=3w.png";
+                    break;
+                case 5:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=4b.png";
+                    break;
+                case 5.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=4w.png";
+                    break;
+                case 6:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=5b.png";
+                    break;
+                case 6.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=5w.png";
+                    break;
+                case 7:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=6b.png";
+                    break;
+                case 7.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=6w.png";
+                    break;
+                case 8:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=7b.png";
+                    break;
+                case 8.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=7w.png";
+                    break;
+                case 9:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=8b.png";
+                    break;
+                case 9.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=8w.png";
+                    break;
+                case 10:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=9b.png";
+                    break;
+                case 10.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=9w.png";
+                    break;
+                case 11:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=10b.png";
+                    break;
+                case 11.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=10w.png";
+                    break;
+                case 12:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=11b.png";
+                    break;
+                case 12.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=11w.png";
+                    break;
+                case "zokerb":
+                    blockPosition.src = httpServerAddress+"/imageSource?name=zokerb.png";
+                    break;
+                case "zokerw":
+                    blockPosition.src = httpServerAddress+"/imageSource?name=zokerw.png";
+                    break;
+                case "black":
+                    blockPosition.src = httpServerAddress+"/imageSource?name=black.png";
+                    break;
+                case "white":
+                    blockPosition.src = httpServerAddress+"/imageSource?name=white.png";
+                    break;
+                case -1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=0bDie.png";
+                    break;
+                case -1.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=0wDie.png";
+                    break;
+                case -2:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=1bDie.png";
+                    break;
+                case -2.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=1wDie.png";
+                    break;
+                case -3:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=2bDie.png";
+                    break;
+                case -3.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=2wDie.png";
+                    break;
+                case -4:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=3bDie.png";
+                    break;
+                case -4.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=3wDie.png";
+                    break;
+                case -5:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=4bDie.png";
+                    break;
+                case -5.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=4wDie.png";
+                    break;
+                case -6:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=5bDie.png";
+                    break;
+                case -6.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=5wDie.png";
+                    break;
+                case -7:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=6bDie.png";
+                    break;
+                case -7.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=6wDie.png";
+                    break;
+                case -8:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=7bDie.png";
+                    break;
+                case -8.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=7wDie.png";
+                    break;
+                case -9:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=8bDie.png";
+                    break;
+                case -9.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=8wDie.png";
+                    break;
+                case -10:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=9bDie.png";
+                    break;
+                case -10.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=9wDie.png";
+                    break;
+                case -11:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=10bDie.png";
+                    break;
+                case -11.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=10wDie.png";
+                    break;
+                case -12:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=11bDie.png";
+                    break;
+                case -12.1:
+                    blockPosition.src = httpServerAddress+"/imageSource?name=11wDie.png";
+                    break;
+                case "-zokerb":
+                    blockPosition.src = httpServerAddress+"/imageSource?name=zokerbDie.png";
+                    break;
+                case "-zokerw":
+                    blockPosition.src = httpServerAddress+"/imageSource?name=zokerwDie.png";
+                    break;
+            }
+        }
+        function skip(){
+            if(turnFlag){
+                if(!skipFlag){
+                    alert("최소한 한번의 공격을 해야 스킵할 수 있습니다!");
+                }
+                else{
+                    socket.emit("skip","");
+                    skipFlag = false;;
+                }
+            }
+            else{
+                alert("당신의 차례일때만 스킵을 할 수 있습니다!!")
+            }
+        }
+
+    </script>
+    <title>다빈치코드 게임방</title>
+
+</head>
+<body>
+<script>
+    socket.on('getCard',function(data) {
+        console.log("data : " + data);
+        user1List = data.myCardList;
+        user1EnemyList = data.enemyCardList;
+
+        console.log(user1EnemyList);
+        var position = [];
+
+        var user1ListLength = user1List.length;
+        for (var i = 0; i < user1ListLength; i++) {
+            console.log(position);
+            position[i] = document.getElementById("mypos" + (i + 1))
+            blockMatch(user1List[i], position[i]);
+        }
+        var user1EnemyListLength = user1EnemyList.length;
+        for (var i = 0; i < user1EnemyListLength; i++) {
+            console.log(position);
+            position[i] = document.getElementById("pos" + (i + 1))
+            blockMatch(user1EnemyList[i], position[i]);
+        }
+        socket.emit("gameStart","");
+
+    });
+    socket.emit('getConnection',{url : currentURL[1], socketID : socket.id});
+    socket.on('gameStartReady',function(data){
+        console.log("ready!!!");
+        alert("다른 상대방을 기다리고있습니다....");
+    });
+    socket.on("invalidAccess",function(){
+        alert("비정상적인 접근입니다!!!초기화면으로 돌아갑니다.");
+        location.href="/";
+    });
+    socket.on("gameResult",function(data){
+        if(data =="YOUWIN"){
+            alert("축하합니다" +currentURL[3] +"님,  당신의 승리입니다!")
+            location.href = "/gameRoomList?userID="+currentURL[3];
+        }
+        else if(data == "YOULOSE"){
+            alert("아쉽습니다" + currentURL[3]+"님,  당신의 패배입니다!")
+            location.href = "/gameRoomList?userID="+currentURL[3];
+        }
+
+    });
+
+    function attack(){
+
+        if(!turnFlag){
+            alert("당신의 차례가 아닙니다. 공격할 수 없습니다!!.");
+            return;
+        }
+
+        var cards = document.getElementById("cardList");
+        var attackValue = cards.options[cards.selectedIndex].value;
+        console.log("선택한 값 ; " + attackValue);
+        var radioList = document.getElementsByName("selectCard");
+        var radioCheckPosition;
+        for (var i = 0; i <radioList.length; ++ i) {
+            if (radioList[i].checked) {
+                radioCheckPosition = radioList[i].value;
+            }
+        }
+
+        if(turnFlag == true){
+            console.log("Index , value : " + radioCheckPosition + "   " + attackValue)
+            socket.emit("attack",{index : radioCheckPosition,value :attackValue});
+        }
+        else{
+            alert("당신의 차례가 아닙니다. 기다리세요!!");
+        }
+    }
+    socket.on("attackSuccess",function(data){
+        user1EnemyList = data.enemyCardList;
+        var position = [];
+        var user1EnemyListLength = user1EnemyList.length;
+        for (var i = 0; i < user1EnemyListLength; i++) {
+            console.log(position);
+            position[i] = document.getElementById("pos" + (i + 1))
+            blockMatch(user1EnemyList[i], position[i]);
+        }
+        alert("공격이 성공했습니다.");
+        skipFlag = true;
+    });
+    socket.on("attackFailure",function(data){
+        user1List = data.myCardList;
+        var position = [];
+        var user1ListLength = user1List.length;
+        for (var i = 0; i < user1ListLength; i++) {
+            console.log(position);
+            position[i] = document.getElementById("mypos" + (i + 1))
+            blockMatch(user1List[i], position[i]);
+        }
+        alert("공격이 실패했습니다.");
+        skipFlag = false;
+    });
+    socket.on("turnAnswer",function(data) {
+        console.log("turn Anser : " + data.Message);
+        if (data.Message == "OK") {
+            turnFlag = true;
+            alert("당신의 차례입니다. 공격할 수 있습니다.");
+            var position = [];
+            user1List = data.updateCardList;
+            var myListLength = user1List.length;
+            for (var i = 0; i < myListLength; i++) {
+                position[i] = document.getElementById("mypos" + (i + 1))
+                blockMatch(user1List[i], position[i]);
+            }
+        }
+        else if(data.Message =="enemyCardUpdate"){
+            var position = [];
+            user1EnemyList = data.updateCardList;;
+            var myListLength = user1EnemyList.length;
+            for (var i = 0; i < myListLength; i++) {
+                position[i] = document.getElementById("pos" + (i + 1))
+                blockMatch(user1EnemyList[i], position[i]);
+            }
+            alert("상대방 차례입니다. 상대방이 카드를 뽑았습니다.");
+        }
+        else {
+            console.log("턴턴");
+            turnFlag = false;
+        }
+    });
+    socket.on('enemyAttackSuccess',function(data){
+        user1List = data.myCardList;
+        var position = [];
+        var user1ListLength = user1List.length;
+        for (var i = 0; i < user1ListLength; i++) {
+            console.log(position);
+            position[i] = document.getElementById("mypos" + (i + 1))
+            blockMatch(user1List[i], position[i]);
+        }
+        alert("적의 공격이 성공했습니다!");
+    });
+    socket.on('enemyAttackFailure',function(data){
+        user1EnemyList = data.enemyCardList;
+        var position = [];
+        var user1EnemyListLength = user1EnemyList.length;
+        for (var i = 0; i < user1EnemyListLength; i++) {
+            console.log(position);
+            position[i] = document.getElementById("pos" + (i + 1))
+            blockMatch(user1EnemyList[i], position[i]);
+        }
+        alert("적의 공격이 실패했습니다!");
+    });
+    socket.on('attackInvalid',function(){
+        alert("잘못된 선택입니다. 다시하세요.");
+    })
+
+
+</script>
+
+
+<div id = enemyShow>
+    <table>
+        <tbody>
+        <tr><td><label id="label1"><img id = "pos1"><input type ="radio" id = "radio1" name = "selectCard" value = "0"></label></td><td><label id="label2"><img id = "pos2"><input type ="radio" id = "radio2" name = "selectCard" value = "1"></label></td>
+            <td><label id="label3"><img id = "pos3"><input type ="radio" id = "radio3" name = "selectCard" value = "2"></label></td><td><label id="label4"><img id = "pos4"><input type ="radio" id = "radio4" name = "selectCard" value = "3"></label></td>
+            <td><label id="label5"><img id = "pos5"><input type ="radio" id = "radio5" name = "selectCard" value = "4"></label></td><td><label id="label6"><img id = "pos6"><input type ="radio" id = "radio6" name = "selectCard" value = "5"></label></td>
+            <td><label id="label7"><img id = "pos7"><input type ="radio" id = "radio7" name = "selectCard" value = "6"></label></td><td><label id="label8"><img id = "pos8"><input type ="radio" id = "radio8" name = "selectCard" value = "7"></label></td>
+            <td><label id="label9"><img id = "pos9"><input type ="radio" id = "radio9" name = "selectCard" value = "8"></label></td><td><label id="label10"><img id = "pos10"><input type ="radio" id = "radio10" name = "selectCard" value = "9"></label></td>
+            <td><label id="label11"><img id = "pos11"><input type ="radio" id = "radio11" name = "selectCard" value = "10"></label></td><td><label id="label12"><img id = "pos12"><input type ="radio" id = "radio12" name = "selectCard" value = "11"></label></td>
+            <td><label id="label13"><img id = "pos13"><input type ="radio" id = "radio13" name = "selectCard" value = "13"></label></td></tr>
+        </tbody>
+    </table>
+</div>
+<br>
+<hr>
+<br>
+<div id = myShow>
+    <table>
+        <tbody>
+        <tr><td><img id = "mypos1"></td><td><img id = "mypos2"></td><td><img id = "mypos3"></td><td><img id = "mypos4"></td><td><img id = "mypos5"></td><td><img id = "mypos6"></td>
+            <td><img id = "mypos7"></td><td><img id = "mypos8"></td><td><img id = "mypos9"></td><td><img id = "mypos10"></td><td><img id = "mypos11"></td><td><img id = "mypos12"></td>
+            <td><img id = "mypos13"></td></tr>
+        </tbody>
+    </table>
+</div>
+<div id = select>
+    <select id="cardList">
+        <option value="1">0</option>
+        <option value="2">1</option>
+        <option value="3">2</option>
+        <option value="4">3</option>
+        <option value="5">4</option>
+        <option value="6">5</option>
+        <option value="7">6</option>
+        <option value="8">7</option>
+        <option value="9">8</option>
+        <option value="10">9</option>
+        <option value="11">10</option>
+        <option value="12">11</option>
+        <option value="zoker">zoker</option>
+    </select> <span>>--------------------<</span>
+    <input type="button" id = "attackSubmit" value = "  확인  " onclick="attack()"><span>>--------------------<</span>
+    <input type="button" id = "skip" value = "턴넘기기" onclick="skip()">
+</div>
+</body>
+
+<script>
+    /////click 이벤트리스터부분////
+    var label1 = document.getElementById("label1");         var radio1 = document.getElementById("radio1");
+    var label2 = document.getElementById("label2");         var radio2 = document.getElementById("radio2");
+    var label3 = document.getElementById("label3");         var radio3 = document.getElementById("radio3");
+    var label4 = document.getElementById("label4");         var radio4 = document.getElementById("radio4");
+    var label5 = document.getElementById("label5");         var radio5 = document.getElementById("radio5");
+    var label6 = document.getElementById("label6");         var radio6 = document.getElementById("radio6");
+    var label7 = document.getElementById("label7");         var radio7 = document.getElementById("radio7");
+    var label8 = document.getElementById("label8");         var radio8 = document.getElementById("radio8");
+    var label9 = document.getElementById("label9");         var radio9 = document.getElementById("radio9");
+    var label10= document.getElementById("label10");        var radio10 = document.getElementById("radio10");
+    var label11= document.getElementById("label11");        var radio11 = document.getElementById("radio11");
+    var label12= document.getElementById("label12");        var radio12 = document.getElementById("radio12");
+    var label13= document.getElementById("label13");        var radio13 = document.getElementById("radio13");
+
+    radio1.change=function () { label1.style.backgroundColor="red"; };radio2.change=function () { label2.style.backgroundColor="red"; };
+    radio3.change=function () { label3.style.backgroundColor="red"; };radio4.change=function () { label4.style.backgroundColor="red"; };
+    radio5.change=function () { label5.style.backgroundColor="red"; };radio6.change=function () { label6.style.backgroundColor="red"; };
+    radio7.change=function () { label7.style.backgroundColor="red"; };radio8.change=function () { label8.style.backgroundColor="red"; };
+    radio9.change=function () { label9.style.backgroundColor="red"; };radio10.change=function () { label10.style.backgroundColor="red"; };
+    radio12.change=function () { label11.style.backgroundColor="red"; };radio11.change=function () { label12.style.backgroundColor="red"; };
+    radio13.change=function () { label13.style.backgroundColor="red"; };
+</script>
+</html>

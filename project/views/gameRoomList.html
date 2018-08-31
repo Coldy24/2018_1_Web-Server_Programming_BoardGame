@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>다비치코드 게임</title>
+
+    <style>
+        html, body{
+            margin:0;
+            height : 100%
+        }
+        #backgroundImage {
+            padding: 50px;
+            background-image: url( "http://coldy24.iptime.org/imageSource?name=DavinchiCord.jpg" );
+            /* server URL : http://127.0.0.1 for test*/
+
+            height: 80%;
+        }
+        h3 {
+            padding: 10px;
+            font-size: 30px;
+            font-weight: bold;
+            text-align: center;
+            background-color: #ffffff;
+            opacity: 0.5;
+        }
+    </style>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+
+        function hello(){
+            var h3Id = document.getElementById("hello");
+
+            var currentURL = window.location.href.split('?');
+            h3Id.innerHTML = "안녕하세요" + currentURL[1] + "님";
+        }
+        function joinRoom() {
+            socket.emit("joinRoom",{roomID:1});
+            socket.on("joinRoomReject",function(data){
+                console.log("game room reject");
+                alert("게임룸이 가득 찼습니다.");
+            });
+            socket.on("joinRoomOK",function(data){
+                console.log('game room ok');
+                var currentURL = window.location.href.split('?');
+                location.href = "/gameDisplay?"+socket.id+'&'+currentURL[1];
+            });
+        }
+
+    </script>
+
+</head>
+
+
+<body>
+<h3 id ="hello"></h3>
+
+<div id = "backgroundImage">
+    <div id = "chatRoomList">
+        <button id = "room1" onclick="joinRoom()">1번방</button>
+        <!--<button id = "room2" onclick="joinRoom2()">2번방</button>-->
+    </div>
+</div>
+
+<script>
+    hello();
+    var currentURL = window.location.href.split('?');
+    var userName = currentURL[1].split('=');
+
+    var val = localStorage.getItem(userName.toString());
+    if(val == null) {
+        var count = 1;
+        alert("안녕하세요 ! " + userName+ "님! 이 PC에서 " + count + "번째 접속입니다.");
+        localStorage.setItem(userName.toString(), count.toString());
+    }
+    else {
+        count = val;
+        alert("안녕하세요 ! " + userName+ "님! 이 PC에서 " + (parseInt(count)+1).toString() + "번째 접속입니다.");
+        localStorage.setItem(userName.toString(), (parseInt(count)+1).toString());
+    }
+
+</script>
+
+</body>
+
+</html>
